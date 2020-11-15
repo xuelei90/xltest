@@ -15,14 +15,23 @@ int main()
 	srvaddr.sin_family = AF_INET;
 	srvaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); //主机字节序转网络字节序
 	srvaddr.sin_port = htons(1234);
-	connect(sock, (sockaddr *)&srvaddr, sizeof(srvaddr));
+	if (0 != connect(sock, (sockaddr *)&srvaddr, sizeof(srvaddr)))
+  {
+    printf("connect error!\n");
+    return -1;
+  }
 
-	sleep(1); 
 	char buffer[128] = {0};
-	read(sock, buffer, sizeof(buffer)-1); //因为有缓冲区，出现粘包问题（没复现）
+  strncpy(buffer, "I'm comming", sizeof(buffer));
+  if (-1 == write(sock, buffer, sizeof(buffer)))
+  {
+    printf("write error!\n");
+  }
+  memset(buffer, 0, sizeof(buffer));
+	read(sock, buffer, sizeof(buffer)-1); 
 	printf("%s\n", buffer);
 
-	//close(sock);
+	close(sock);
 	
 	return 0;
 }

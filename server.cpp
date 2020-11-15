@@ -19,18 +19,24 @@ int main()
 
 	listen(srvsock, 5); //最大连接数5
 
+  printf("server start\n");
+  static int total = 0;
 	while (1)
 	{
+    total += 1;
 		sockaddr_in cltaddr;
 		socklen_t cltaddrlen = sizeof(cltaddr);
-		int cltsock = accept(srvsock, (sockaddr *)&cltaddr, &cltaddrlen);
+		int cltsock = accept(srvsock, (sockaddr *)&cltaddr, &cltaddrlen); //block
 
 		//新连接处理最笨的方法：创建线程
-		char str[] = "您已上线";
-		write(cltsock, str, sizeof(str));
+    char buffer[128] = {0};
+    read(cltsock, buffer, sizeof(buffer));
+    printf("recive[%d]:%s\n", total, buffer);
+		char str[128] = {0};
+    snprintf(str, sizeof(str), "Client[%d] welcome", total);
 		write(cltsock, str, sizeof(str));
 
-		//close(cltsock);
+		close(cltsock);
 	}
 
 	close(srvsock);
