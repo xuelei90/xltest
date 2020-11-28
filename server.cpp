@@ -36,6 +36,7 @@ int main()
     snprintf(str, sizeof(str), "Client[%d] welcome", total);
 		write(cltsock, str, sizeof(str));
 
+    //short connect
 		close(cltsock);
 	}
 
